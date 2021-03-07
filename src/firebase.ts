@@ -20,6 +20,6 @@ const firebaseApp = firebase.initializeApp({
   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGINGSENDERID,
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
 });
-
+export const provider = new firebase.auth.GoogleAuthProvider();
 export const db = firebaseApp.firestore();
 export const auth = firebase.auth();
