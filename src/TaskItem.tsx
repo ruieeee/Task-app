@@ -8,13 +8,16 @@ import styles from "./TaskItem.module.css";
 interface Props {
   id: string;
   title: string;
+  userId: string;
 }
 
 const TaskItem: React.FC<Props> = (props) => {
   const [title, setTitle] = useState(props.title);
 
   const editTask = () => {
-    db.collection("tasks").doc(props.id).set({ title: title }, { merge: true }); //titleだけを変更する場合merge: true
+    db.collection("tasks")
+      .doc(props.id)
+      .set({ title: title, userId: props.userId }, { merge: true }); //titleだけを変更する場合merge: true
   };
   const deleteTask = () => {
     db.collection("tasks").doc(props.id).delete();

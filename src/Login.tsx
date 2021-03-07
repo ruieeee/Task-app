@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Login.module.css";
 import { Button, FormControl, TextField, Typography } from "@material-ui/core";
-import { auth } from "./firebase";
+import { auth, provider } from "./firebase";
 
 const Login: React.FC = (props: any) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -79,6 +79,30 @@ const Login: React.FC = (props: any) => {
           {isLogin ? "Create new account ?" : "Back to login"}
         </span>
       </Typography>
+      <br />
+      <Button
+        variant="contained"
+        color="primary"
+        size="small"
+        onClick={async () => {
+          try {
+            await auth.signInWithRedirect(provider);
+            const result = auth.getRedirectResult();
+            if ((await result).credential) {
+              const credential: any = (await result).credential;
+              const token = credential.accessToken;
+              const user = (await result).user;
+            }
+            props.history.push("/");
+          } catch (error) {
+            const mess =
+              error.code + error.email + error.message + error.credential;
+            alert(mess);
+          }
+        }}
+      >
+        Google
+      </Button>
     </div>
   );
 };

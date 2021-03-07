@@ -20,11 +20,17 @@ const useStyles = makeStyles({
 });
 
 const App: React.FC = (props: any) => {
-  const [tasks, setTacks] = useState([{ id: "", title: "" }]);
+  const [tasks, setTacks] = useState([{ id: "", title: "", userId: "" }]);
   //複数のタスクのオブジェクトが入ってくるから配列で初期化
 
   const [input, setInput] = useState("");
   const classes = useStyles();
+  const user = auth.currentUser?.displayName;
+  const uid = auth.currentUser?.uid;
+
+  const tasksFilter = tasks.filter((task) => {
+    return task.userId == uid;
+  });
 
   useEffect(() => {
     const unSub = auth.onAuthStateChanged((user) => {
@@ -36,7 +42,11 @@ const App: React.FC = (props: any) => {
   useEffect(() => {
     const unSub = db.collection("tasks").onSnapshot((snapshot) => {
       setTacks(
-        snapshot.docs.map((doc) => ({ id: doc.id, title: doc.data().title }))
+        snapshot.docs.map((doc) => ({
+          id: doc.id,
+          title: doc.data().title,
+          userId: doc.data().userId,
+        }))
       );
     });
     return () => unSub();
@@ -45,13 +55,15 @@ const App: React.FC = (props: any) => {
   }, []);
 
   const newTask = (e: React.MouseEvent<HTMLButtonElement>) => {
-    db.collection("tasks").add({ title: input });
+    db.collection("tasks").add({ title: input, userId: uid });
     setInput("");
   };
 
   return (
     <div className={styles.app__root}>
       <h1>Todo App by React/firebase</h1>
+      <br />
+      <h3>{user}</h3>
       <button
         className={styles.app__logout}
         onClick={async () => {
@@ -81,8 +93,13 @@ const App: React.FC = (props: any) => {
       </button>
 
       <List className={classes.list}>
-        {tasks.map((task) => (
-          <TaskItem key={task.id} id={task.id} title={task.title} />
+        {tasksFilter.map((task) => (
+          <TaskItem
+            key={task.id}
+            id={task.id}
+            title={task.title}
+            userId={task.userId}
+          />
         ))}
       </List>
     </div>
