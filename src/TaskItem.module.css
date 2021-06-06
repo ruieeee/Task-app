@@ -3,6 +3,15 @@
   background-color: transparent;
   border: none;
   outline: none;
-  margin-left: 2px;
+  margin-left: 10px;
   color: dimgray;
+  text-align: center;
+}
+.taskitem__icon:hover {
+  opacity: 0.6;
+}
+
+.break .break2 {
+  /* overflow-wrap: break-word; */
+  width: 100px;
 }

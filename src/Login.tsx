@@ -8,6 +8,22 @@ const Login: React.FC = (props: any) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const clickGoogle = async () => {
+    try {
+      await auth.signInWithRedirect(provider);
+      const result = auth.getRedirectResult();
+      if ((await result).credential) {
+        const credential: any = (await result).credential;
+        const token = credential.accessToken;
+        const user = (await result).user;
+      }
+      props.history.push("/");
+    } catch (error) {
+      const mess = error.code + error.email + error.message + error.credential;
+      alert(mess);
+    }
+  };
+
   useEffect(() => {
     //auth.onAuthStateChanged:認証関係に何らかの変更があった場合呼び出される
     //認証が成功しているとuserに何かしら情報が入っている
@@ -84,22 +100,7 @@ const Login: React.FC = (props: any) => {
         variant="contained"
         color="primary"
         size="small"
-        onClick={async () => {
-          try {
-            await auth.signInWithRedirect(provider);
-            const result = auth.getRedirectResult();
-            if ((await result).credential) {
-              const credential: any = (await result).credential;
-              const token = credential.accessToken;
-              const user = (await result).user;
-            }
-            props.history.push("/");
-          } catch (error) {
-            const mess =
-              error.code + error.email + error.message + error.credential;
-            alert(mess);
-          }
-        }}
+        onClick={clickGoogle}
       >
         Google
       </Button>

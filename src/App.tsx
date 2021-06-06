@@ -7,6 +7,13 @@ import styles from "./App.module.css";
 import { makeStyles } from "@material-ui/styles";
 import { auth } from "./firebase";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import MediaQuery from "react-responsive";
+import { Link } from "react-router-dom";
+
+export const isMobile = () => {
+  var regexp = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+  return window.navigator.userAgent.search(regexp) !== -1;
+};
 
 const useStyles = makeStyles({
   filed: {
@@ -15,7 +22,11 @@ const useStyles = makeStyles({
   },
   list: {
     margin: "auto",
-    width: "40%",
+    width: "50%",
+  },
+  list2: {
+    margin: "auto",
+    width: "90%",
   },
 });
 
@@ -55,12 +66,25 @@ const App: React.FC = (props: any) => {
   }, []);
 
   const newTask = (e: React.MouseEvent<HTMLButtonElement>) => {
-    db.collection("tasks").add({ title: input, userId: uid });
+    let docData = { title: input, userId: uid };
+    db.collection("tasks")
+      .doc("task " + input)
+      .set(docData)
+      .then(() => {
+        console.log("Document successfully written!");
+      })
+      .catch((error) => {
+        console.error("Error writing document: ", error);
+      });
     setInput("");
   };
 
   return (
     <div className={styles.app__root}>
+      <h1>{isMobile() ? "mobile" : "PC"}</h1>
+      <br />
+      <Link to="/profile">プロフィール</Link>
+      <br />
       <h1>Todo App by React/firebase</h1>
       <br />
       <h3>{user}</h3>
@@ -91,17 +115,30 @@ const App: React.FC = (props: any) => {
       <button disabled={!input} onClick={newTask} className={styles.app__icon}>
         <AddToPhotosIcon />
       </button>
-
-      <List className={classes.list}>
-        {tasksFilter.map((task) => (
-          <TaskItem
-            key={task.id}
-            id={task.id}
-            title={task.title}
-            userId={task.userId}
-          />
-        ))}
-      </List>
+      <MediaQuery query="(min-width: 1000px)">
+        <List className={classes.list}>
+          {tasksFilter.map((task) => (
+            <TaskItem
+              key={task.id}
+              id={task.id}
+              title={task.title}
+              userId={task.userId}
+            />
+          ))}
+        </List>
+      </MediaQuery>
+      <MediaQuery query="(max-width: 1000px)">
+        <List className={classes.list2}>
+          {tasksFilter.map((task) => (
+            <TaskItem
+              key={task.id}
+              id={task.id}
+              title={task.title}
+              userId={task.userId}
+            />
+          ))}
+        </List>
+      </MediaQuery>
     </div>
   );
 };

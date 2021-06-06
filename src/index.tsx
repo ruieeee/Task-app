@@ -5,14 +5,14 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Route, BrowserRouter } from "react-router-dom";
 import Login from "./Login";
+import Profile from "./conponent/page/Profile";
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <>
-        <Route exact path="/" component={App} />
-        <Route exact path="/login" component={Login} />
-      </>
+      <Route exact path="/" component={App} />
+      <Route exact path="/login" component={Login} />
+      <Route exact path="/profile" component={Profile} />
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")
